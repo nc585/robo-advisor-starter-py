@@ -13,7 +13,7 @@ api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
 symbol = input("Please specify a stock symbol: ") 
 #insert more functionality here to pull up a message if incorrect symbol is entered
 
-request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=AMZN&apikey={api_key}"  
+request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"  
 
 response = requests.get(request_url)
 
@@ -29,6 +29,17 @@ days = list(day_keys)
 latest_day = days[0] #> '2019-02-19'
 latest_price_usd = tsd[latest_day]["4. close"]
 
+last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
+
+latest_close = parsed_response["Time Series (Daily)"][latest_day]["4. close"]
+
+high_prices = []
+
+for day in days:
+    high_price = tsd[day]["2. high"]
+    high_prices.append(float(high_price))
+recent_high = max(high_prices)
+
 #
 # INFO OUTPUTS
 #
@@ -36,20 +47,22 @@ latest_price_usd = tsd[latest_day]["4. close"]
 # TODO: write response data to a CSV file
 
 # TODO: further revise the example outputs below to reflect real information
-t = datetime.datetime.now()
+#t = datetime.datetime.now()
 def to_usd(my_price):
     return f"${my_price:,.2f}"
 
 print("-----------------")
 print(f"STOCK SYMBOL: {symbol}")
-print("RUN AT: " + t.strftime("%Y-%m-%d %H:%M:%S"))
 print("-----------------")
-print("LATEST DAY OF AVAILABLE DATA:", latest_day)
+print("REQUESTING STOCK MARKET DATA...")
+#print("REQUEST AT: " + t.strftime("%Y-%m-%d %H:%M:%S"))
+print("-----------------")
+print("LATEST DAY OF AVAILABLE DATA: {last_refreshed}")
 print(f"LATEST DAILY CLOSING PRICE: {to_usd(float(latest_price_usd))}")
 
 # TODO: write functions to read data for recent high and low: 
-print("RECENT HIGH: $101,000.00")
-print("RECENT LOW: $99,000.00")
+print(f"RECENT HIGH: {to_usd(float(recent_high))}")
+print(f"RECENT LOW: {to_usd(float(latest_price_usd))}")
 print("-----------------")
 
 # TODO: write investment recommendation using if statements below:
