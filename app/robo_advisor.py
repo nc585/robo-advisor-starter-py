@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import json
 import os
 import requests
+import csv
+
 import datetime
 
 load_dotenv()
@@ -33,6 +35,7 @@ last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
 
 latest_close = parsed_response["Time Series (Daily)"][latest_day]["4. close"]
 
+# guidance provided by Prof Rossetti: https://www.youtube.com/watch?v=UXAVOP1oCog&feature=youtu.be
 high_prices = []
 low_prices = []
 
@@ -48,12 +51,17 @@ recent_low = min(low_prices)
 # INFO OUTPUTS
 #
 
-# TODO: write response data to a CSV file
-
 # TODO: further revise the example outputs below to reflect real information
 #t = datetime.datetime.now()
 def to_usd(my_price):
     return f"${my_price:,.2f}"
+
+csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
+
+with open (csv_file_path, "w") as csv_file:
+    writer = csv.DictWriter(csv_file, fieldnames=["", ""])
+    writer.writeheader()
+    writer.writerow({})
 
 print("-----------------")
 print(f"STOCK SYMBOL: {symbol}")
@@ -73,3 +81,18 @@ print("-----------------")
 print("RECOMMENDATION: Buy!")
 print("RECOMMENDATION REASON: Because the latest closing price is within threshold XYZ etc., etc. and this fits within your risk tolerance etc., etc.")
 print("-----------------")
+
+
+# TODO: write response data to a CSV file
+print("-----------------")
+print(f"WRITING DATA TO CSV: {csv_file_path}...")
+print("-----------------")
+print("HAPPY INVESTING!")
+print("-----------------")
+
+# guidance provided by Prof Rossetti: https://www.youtube.com/watch?v=UXAVOP1oCog&feature=youtu.be
+
+
+
+
+
