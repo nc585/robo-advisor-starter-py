@@ -34,11 +34,15 @@ last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
 latest_close = parsed_response["Time Series (Daily)"][latest_day]["4. close"]
 
 high_prices = []
+low_prices = []
 
 for day in days:
     high_price = tsd[day]["2. high"]
     high_prices.append(float(high_price))
+    low_price = tsd[day]["3. low"]
+    low_prices.append(float(low_price))
 recent_high = max(high_prices)
+recent_low = min(low_prices)
 
 #
 # INFO OUTPUTS
@@ -62,7 +66,7 @@ print(f"LATEST DAILY CLOSING PRICE: {to_usd(float(latest_price_usd))}")
 
 # TODO: write functions to read data for recent high and low: 
 print(f"RECENT HIGH: {to_usd(float(recent_high))}")
-print(f"RECENT LOW: {to_usd(float(latest_price_usd))}")
+print(f"RECENT LOW: {to_usd(float(recent_low))}")
 print("-----------------")
 
 # TODO: write investment recommendation using if statements below:
