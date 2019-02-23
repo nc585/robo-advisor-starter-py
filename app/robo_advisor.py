@@ -1,19 +1,24 @@
-#robo_advisor.py
+#robo_advisor.py https://github.com/prof-rossetti/georgetown-opim-243-201901/blob/master/projects/robo-advisor.md
 
 from dotenv import load_dotenv
 import json
 import os
 import requests
 import csv
-
 import datetime
 
+#get secret API key
 load_dotenv()
-
 api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
 
-symbol = input("Please specify a stock symbol: ") 
-#insert more functionality here to pull up a message if incorrect symbol is entered
+#user input and validation, guidance from https://github.com/hiepnguyen034
+
+while True:
+    symbol = input("Please specify a stock symbol: ") 
+    if symbol.isalpha() and len(symbol) <= 5: 
+        break
+    else:
+        print("This does not appear to be a stock ticker. Please ensure you enter a properly-formatted symbol like MSFT with no numbers.")
 
 request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"  
 
@@ -23,11 +28,11 @@ parsed_response = json.loads(response.text)
 
 # TODO: traverse the nested response data structure to find the latest closing price and other values of interest...
 
-#guidance from @prof rossetti
+#guidance from https://github.com/prof-rossetti
 tsd = parsed_response["Time Series (Daily)"]
 day_keys = tsd.keys() 
 days = list(day_keys) 
-#print(days[0]) #> today's date prints  
+
 latest_day = days[0] #> '2019-02-19'
 latest_price_usd = tsd[latest_day]["4. close"]
 
@@ -52,7 +57,9 @@ recent_low = min(low_prices)
 #
 
 # TODO: further revise the example outputs below to reflect real information
-#t = datetime.datetime.now()
+
+t = datetime.datetime.now()
+
 def to_usd(my_price):
     return f"${my_price:,.2f}"
 
@@ -71,21 +78,13 @@ with open (csv_file_path, "w") as csv_file:
             "low": daily_prices["3. low"],
             "close": daily_prices["4. close"],
             "volume": daily_prices["5. volume"],
-    })
-    writer.writerow({
-        "timestamp": "Todo",
-        "open": "Todo",
-        "high": "Todo",
-        "low": "Todo",
-        "close": "Todo",
-        "volume": "Todo",
-    })    
+        })
 
 print("-----------------")
-print(f"STOCK SYMBOL: {symbol}")
+print("STOCK SYMBOL:", symbol)
 print("-----------------")
 print("REQUESTING STOCK MARKET DATA...")
-#print("REQUEST AT: " + t.strftime("%Y-%m-%d %H:%M:%S"))
+print("REQUEST AT: " + str(t.hour) + ":" + str(t.minute) + " on " + str(t.strftime("%B")) + " " + str(t.day) + "," + str(t.year)) #https://github.com/hiepnguyen034
 print("-----------------")
 print("LATEST DAY OF AVAILABLE DATA: {last_refreshed}")
 print(f"LATEST DAILY CLOSING PRICE: {to_usd(float(latest_price_usd))}")
