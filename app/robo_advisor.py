@@ -26,8 +26,6 @@ response = requests.get(request_url)
 
 parsed_response = json.loads(response.text)
 
-# TODO: traverse the nested response data structure to find the latest closing price and other values of interest...
-
 #guidance from https://github.com/prof-rossetti
 tsd = parsed_response["Time Series (Daily)"]
 day_keys = tsd.keys() 
@@ -52,17 +50,13 @@ for day in days:
 recent_high = max(high_prices)
 recent_low = min(low_prices)
 
-#
-# INFO OUTPUTS
-#
-
-# TODO: further revise the example outputs below to reflect real information
-
+#formatting keys
 t = datetime.datetime.now()
 
 def to_usd(my_price):
     return f"${my_price:,.2f}"
 
+# guidance provided by Prof Rossetti: https://www.youtube.com/watch?v=UXAVOP1oCog&feature=youtu.be
 csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
 
 csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
@@ -80,34 +74,32 @@ with open (csv_file_path, "w") as csv_file:
             "volume": daily_prices["5. volume"],
         })
 
+#print informational outputs
 print("-----------------")
 print("STOCK SYMBOL:", symbol)
 print("-----------------")
 print("REQUESTING STOCK MARKET DATA...")
 print("REQUEST AT: " + str(t.hour) + ":" + str(t.minute) + " on " + str(t.strftime("%B")) + " " + str(t.day) + "," + str(t.year)) #https://github.com/hiepnguyen034
 print("-----------------")
-print("LATEST DAY OF AVAILABLE DATA: {last_refreshed}")
+print(f"LATEST DAY OF AVAILABLE DATA: {last_refreshed}")
 print(f"LATEST DAILY CLOSING PRICE: {to_usd(float(latest_price_usd))}")
-
-# TODO: write functions to read data for recent high and low: 
 print(f"RECENT HIGH: {to_usd(float(recent_high))}")
 print(f"RECENT LOW: {to_usd(float(recent_low))}")
 print("-----------------")
 
-# TODO: write investment recommendation using if statements below:
-print("RECOMMENDATION: Buy!")
-print("RECOMMENDATION REASON: Because the latest closing price is within threshold XYZ etc., etc. and this fits within your risk tolerance etc., etc.")
-print("-----------------")
-
-
-# TODO: write response data to a CSV file
+#stock recommendation calculations
+if float(latest_price_usd) >= ((recent_high - recent_low)/2):
+    print("RECOMMENDATION: Buy!")
+    print("RECOMMENDATION REASON: Because the latest closing price is greater than the average of the recent high and recent low price, buying now presents an opportunity to capitalize on the stock's momentum.")
+else:
+    print("RECOMMENDATION: Don't buy!")
+    print("RECOMMENDATION REASON: Because the latest closing price is less than the average of the recent high and recent low price, don't buy because the stock price is too volatile.")
 print("-----------------")
 print(f"WRITING DATA TO CSV: {csv_file_path}...")
 print("-----------------")
 print("HAPPY INVESTING!")
 print("-----------------")
 
-# guidance provided by Prof Rossetti: https://www.youtube.com/watch?v=UXAVOP1oCog&feature=youtu.be
 
 
 
