@@ -33,9 +33,7 @@ days = list(day_keys)
 
 latest_day = days[0] #> '2019-02-19'
 latest_price_usd = tsd[latest_day]["4. close"]
-
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
-
 latest_close = parsed_response["Time Series (Daily)"][latest_day]["4. close"]
 
 # guidance provided by Prof Rossetti: https://www.youtube.com/watch?v=UXAVOP1oCog&feature=youtu.be
@@ -88,12 +86,12 @@ print(f"RECENT LOW: {to_usd(float(recent_low))}")
 print("-----------------")
 
 #stock recommendation calculations
-if float(latest_price_usd) >= ((recent_high - recent_low)/2):
+if float(latest_price_usd) >= (recent_high-(0.1*recent_high)):
     print("RECOMMENDATION: Buy!")
-    print("RECOMMENDATION REASON: Because the latest closing price is greater than the average of the recent high and recent low price, buying now presents an opportunity to capitalize on the stock's momentum.")
+    print("RECOMMENDATION REASON: Because the latest closing price is greater than ten percent below the recent high price, buying now presents an opportunity to capitalize on the stock's momentum.")
 else:
     print("RECOMMENDATION: Don't buy!")
-    print("RECOMMENDATION REASON: Because the latest closing price is less than the average of the recent high and recent low price, don't buy because the stock price is too volatile.")
+    print("RECOMMENDATION REASON: Because the latest closing price is less than ten percent below the recent high price, don't buy since the stock price is trending downwards.")
 print("-----------------")
 print(f"WRITING DATA TO CSV: {csv_file_path}...")
 print("-----------------")
