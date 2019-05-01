@@ -2,6 +2,8 @@
 
 Guidance provided by: https://github.com/s2t2/robo-advisor-screencast/pull/1/files
 
+Additional guidance provided by: https://github.com/hiepnguyen034 
+
 # Python
 
   + https://github.com/prof-rossetti/georgetown-opim-243-201901/blob/master/notes/python/modules/csv.md#writing-csv-files
